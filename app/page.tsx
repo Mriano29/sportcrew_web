@@ -1,16 +1,27 @@
-import Hero from "@/components/hero";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
+import { MainContainer } from "@/components/MainContainer";
+import { SignInForm } from "@/components/SignInForm";
+import Image from "next/image";
+
 
 export default async function Home() {
   return (
     <>
-      <Hero />
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <h2 className="font-medium text-xl mb-4">Next steps</h2>
-        {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-      </main>
+      <MainContainer>
+        <div className="bg-white grid w-full h-full grid-cols-1 md:grid-cols-2 shadow-lg rounded-lg overflow-hidden">
+          <div className="bg-white text-black flex items-center justify-center flex-col p-10">
+            <SignInForm />
+          </div>
+          <div className="relative hidden md:block w-full h-full">
+            <Image
+              className="object-cover w-full h-full"
+              fill
+              src="/images/sideimage.jpg"
+              alt="Login side image"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        </div>
+      </MainContainer>
     </>
   );
 }
