@@ -73,7 +73,6 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
             </form>
             <div className="w-full border-t border-gray-300 my-6" />
             <FormButton title="Create an account" type="button" thirdVariant onClick={gotoSignup} />
-            <ThemeSwitcher />
         </div>
     );
 };
