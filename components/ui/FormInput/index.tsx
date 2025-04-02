@@ -9,7 +9,7 @@ interface CustomInputProps {
 export const FormInput: React.FC<CustomInputProps> = ({ title, type, placeholder, value, onChange }) => {
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-700">{title}</label>
+            <label className="block text-sm font-medium">{title}</label>
             <input
                 type={type}
                 value={value}

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { FormInput } from '../ui/FormInput';
 import { FormButton } from '../ui/FormButton';
-import { ThemeSwitcher } from '../ThemeSwitcher';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -12,7 +11,7 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-interface SignInFormProps {}
+interface SignInFormProps { }
 
 export const SignInForm: React.FC<SignInFormProps> = () => {
     const router = useRouter();
@@ -23,12 +22,12 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         setError("");
-        
+
         const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
-        
+
         if (error) {
             setError(error.message);
         } else {
@@ -42,7 +41,7 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
     };
 
     return (
-        <div>
+        <div className='bg-card border-2 border-border rounded-3xl p-10'>
             <div className="mb-6 flex flex-col justify-center items-center">
                 <Image
                     className="object-contain"
@@ -71,7 +70,11 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 <FormButton title="Sign in" type="submit" />
             </form>
-            <div className="w-full border-t border-gray-300 my-6" />
+            <div className="flex items-center my-6">
+                <div className="flex-grow border-t border-muted-foreground" />
+                <span className="mx-4 text-muted-foreground">OR</span>
+                <div className="flex-grow border-t border-muted-foreground" />
+            </div>
             <FormButton title="Create an account" type="button" thirdVariant onClick={gotoSignup} />
         </div>
     );
