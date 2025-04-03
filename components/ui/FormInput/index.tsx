@@ -14,7 +14,7 @@ export const FormInput: React.FC<CustomInputProps> = ({ title, type, placeholder
                 type={type}
                 value={value}
                 onChange={onChange}
-                className="mt-1 block w-full px-4 py-2 border bg-white border-gray-300 rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500"
+                className="mt-1 block w-full px-4 py-2 border bg-background border-border rounded-md shadow-sm focus:ring-cyan-500 focus:border-cyan-500"
                 placeholder={placeholder}
             />
         </div>

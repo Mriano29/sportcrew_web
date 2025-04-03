@@ -19,11 +19,16 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
+    const setCookie = (name: string, value: string, days: number) => {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${value}; expires=${expires}; path=/; secure; SameSite=Strict`;
+    };
+
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
         setError("");
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -31,13 +36,12 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
         if (error) {
             setError(error.message);
         } else {
-            router.push("/google.com");
+            const token = data?.session?.access_token;
+            if (token) {
+                setCookie("sb_token", token, 7);
+            }
+            router.push("/dashboard");
         }
-    };
-
-    const gotoSignup = (event: React.MouseEvent) => {
-        event.preventDefault();
-        router.push("/signup");
     };
 
     return (
@@ -72,10 +76,10 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
             </form>
             <div className="flex items-center my-6">
                 <div className="flex-grow border-t border-muted-foreground" />
-                <span className="mx-4 text-muted-foreground">OR</span>
+                <span className="mx-4 text-muted-foreground">or</span>
                 <div className="flex-grow border-t border-muted-foreground" />
             </div>
-            <FormButton title="Create an account" type="button" thirdVariant onClick={gotoSignup} />
+            <FormButton title="Create an account" type="button" thirdVariant onClick={() => router.push("/signup")} />
         </div>
     );
 };

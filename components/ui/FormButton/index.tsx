@@ -11,7 +11,7 @@ export const FormButton: React.FC<CustomButtonProps> = ({
     type,
     secondVariant,
     thirdVariant,
-    onClick
+    onClick,
 }) => {
     const variants = {
         default: "bg-cyan-500 text-white hover:bg-cyan-600",
