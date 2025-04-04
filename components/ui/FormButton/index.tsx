@@ -1,3 +1,4 @@
+//Types
 interface CustomButtonProps {
     title: string;
     type: "submit" | "reset" | "button";

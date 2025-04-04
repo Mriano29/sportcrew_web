@@ -9,8 +9,6 @@ SportCrew is a social platform designed to connect people with similar sporting 
 - **TypeScript**: A strongly typed programming language that builds on JavaScript.
 - **React**: A JavaScript library for building user interfaces.
 
-## Project Structure
-
 ## Features
 
 ### 1. **Modern UI with Material-UI (MUI)**
@@ -31,8 +29,6 @@ SportCrew is a social platform designed to connect people with similar sporting 
 ### 5. **User Authentication and Database with Supabase**
 
 - **Supabase** provides real-time database capabilities and authentication, allowing users to sign up, log in, and interact with their profiles and communities.
-
-## Workflow
 
 ## Author - **Miguel A. Riaño Rojas**
 

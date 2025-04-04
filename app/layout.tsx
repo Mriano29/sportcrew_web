@@ -1,6 +1,7 @@
-import { Geist } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -12,10 +13,7 @@ export const metadata = {
   description: "Social place for sporty people",
 };
 
-const geistSans = Geist({
-  display: "swap",
-  subsets: ["latin"],
-});
+const manrope = Manrope({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -23,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
+    <html lang="en" className={manrope.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
@@ -31,7 +29,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-         {children}
+          <ToastContainer />
+          {children}
         </ThemeProvider>
       </body>
     </html>

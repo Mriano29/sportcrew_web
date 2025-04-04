@@ -1,14 +1,16 @@
 "use client";
-// Elements
-import { MainContainer } from "@/components/MainContainer";
-import { SignInForm } from "@/components/SignInForm";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import Image from "next/image";
+//Core
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase
+// Elements
+import Image from "next/image";
+import { MainContainer } from "@/components/MainContainer";
+import { SignInForm } from "@/components/SignInForm";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { LoadingScreen } from "@/components/LoadingScreen";
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -17,9 +19,7 @@ const supabase = createClient(
 const getCookie = (name: string) => {
   const matches = document.cookie.match(
     new RegExp(
-      "(?:^|; )" +
-      name.replace(/([.$?*|{}()[]\/+^])/g, "\\$1") +
-      "=([^;]*)"
+      "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, "\\$1") + "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -33,24 +33,27 @@ export default function Home() {
     const token = getCookie("sb_token");
 
     if (token) {
-      supabase.auth.setSession({
-        access_token: token,
-        refresh_token: "",
-      }).then(() => {
-        router.push("/dashboard");
-      }).catch((error) => {
-        // Si no se puede autenticar, redirige al login
-        console.error("Error al autenticar:", error);
-      }).finally(() => {
-        setLoading(false); 
-      });
+      supabase.auth
+        .setSession({
+          access_token: token,
+          refresh_token: "",
+        })
+        .then(() => {
+          router.push("/dashboard");
+        })
+        .catch((error) => {
+          console.error("Error al autenticar:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
-      setLoading(false); 
+      setLoading(false);
     }
   }, [router]);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <LoadingScreen />;
   }
 
   return (
