@@ -6,9 +6,9 @@ import { createClient } from "@supabase/supabase-js";
 
 //Elements
 import Image from "next/image";
-import { FormButton, FormInput } from "../ui";
+import { FormButton, FormInput, OrDiv } from "../ui";
 import { Bounce, toast } from "react-toastify";
-import { OrDiv } from "../OrDiv";
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

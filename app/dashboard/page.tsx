@@ -1,8 +1,11 @@
 "use client";
-//Core
-import { useRouter } from "next/navigation";
 
-//Elements
+// Core
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+// Elements
 import { DashboardNavigation } from "@/components/DashboardNavigation";
 import { Chat, Home, Person, Settings } from "@mui/icons-material";
 import {
@@ -11,8 +14,18 @@ import {
   HomePage,
   Profile,
 } from "@/components/DashboardPages";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
+
+// Crear cliente de Supabase
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function Dashboard() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
   const sections = [
     {
       name: "Home",
@@ -35,6 +48,24 @@ export default function Dashboard() {
       section: <AccountSettings />,
     },
   ];
+
+  // Verificar sesión al cargar
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        router.push("/");
+      } else {
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+  }, [router]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className="h-full w-full flex flex-row">

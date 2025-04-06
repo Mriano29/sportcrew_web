@@ -6,10 +6,9 @@ import { createClient } from "@supabase/supabase-js";
 
 // Elements
 import Image from "next/image";
-import { MainContainer } from "@/components/MainContainer";
-import { SignInForm } from "@/components/SignInForm";
+import { LoadingScreen, MainContainer } from "@/components/ui";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { LoadingScreen } from "@/components/LoadingScreen";
+import { SignInForm } from "@/components/SignInForm";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

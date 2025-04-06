@@ -5,10 +5,9 @@ import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 
 //Elements
-import { MainContainer } from "../MainContainer";
 import { ThemeSwitcher } from "../ThemeSwitcher";
-import DashboardLogo from "../DashboardLogo";
 import { Logout } from "@mui/icons-material";
+import { DashboardLogo } from "../ui";
 
 //Types
 interface Sections {
@@ -73,7 +72,7 @@ export const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
           </ul>
         </div>
       </div>
-      <MainContainer>{sections[selectedIndex].section}</MainContainer>
+      <div className="p-2 h-full w-full">{sections[selectedIndex].section}</div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-accent border-t border-border flex justify-around items-center py-2 lg:hidden">
         {sections.map((section, index) => (
           <button

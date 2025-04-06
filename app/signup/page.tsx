@@ -1,5 +1,5 @@
 //Elements
-import { MainContainer } from "@/components/MainContainer";
+import { MainContainer } from "@/components/ui/MainContainer";
 import { SignUpForm } from "@/components/SignUpForm";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import Image from "next/image";
