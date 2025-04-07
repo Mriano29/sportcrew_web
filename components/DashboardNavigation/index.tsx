@@ -39,10 +39,12 @@ export const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="absolute top-4 right-4">
+    <div className="flex h-screen w-full overflow-hidden">
+      <div className="hidden lg:block absolute top-4 right-4">
         <ThemeSwitcher />
       </div>
+
+      {/**Lateral nav*/}
       <div className="hidden lg:flex w-60 bg-accent  flex-shrink-0 flex-col">
         <DashboardLogo />
         <div className="flex-1 overflow-y-auto">
@@ -72,7 +74,11 @@ export const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
           </ul>
         </div>
       </div>
-      <div className="p-2 h-full w-full">{sections[selectedIndex].section}</div>
+
+      {/**Sections */}
+      <div className="h-full w-full">{sections[selectedIndex].section}</div>
+
+      {/**Bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-accent border-t border-border flex justify-around items-center py-2 lg:hidden">
         {sections.map((section, index) => (
           <button
