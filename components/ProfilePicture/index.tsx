@@ -10,7 +10,7 @@ import { Bounce, toast } from "react-toastify";
 import PortraitIcon from "@mui/icons-material/Portrait";
 
 interface ProfilePictureProps {
-  image: string;
+  image?: string;
 }
 
 //Supabase
@@ -36,6 +36,7 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
 
   const handleImageUpload = async (file: File) => {
     try {
+      // Obtener usuario autenticado
       const {
         data: { user },
         error: userError,
@@ -45,8 +46,18 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
         throw new Error("No se pudo obtener el usuario");
       }
 
-      const fileName = `${user.id}/pfp.jpg`;
+      const fileName = `${user.id}/profile_picture.jpg`;
 
+      // Eliminar la imagen anterior si existe
+      const { error: deleteError } = await supabase.storage
+        .from("sportcrew-media")
+        .remove([fileName]);
+
+      if (deleteError && deleteError.message !== "Object not found") {
+        throw new Error(deleteError.message);
+      }
+
+      // Subir la nueva imagen
       const { error: uploadError } = await supabase.storage
         .from("sportcrew-media")
         .upload(fileName, file, {
@@ -65,16 +76,21 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
           theme: "colored",
           transition: Bounce,
         });
-        return;
+        return; // Termina la función si ocurre un error
       }
 
+      // Obtener la URL pública de la imagen
       const { data: publicUrlData } = supabase.storage
         .from("sportcrew-media")
         .getPublicUrl(fileName);
 
-      const publicUrl = publicUrlData?.publicUrl;
+      let publicUrl = publicUrlData?.publicUrl;
 
       if (publicUrl) {
+        // Añadir un timestamp para forzar la recarga de la imagen
+        publicUrl = `${publicUrl}?t=${new Date().getTime()}`;
+
+        // Actualizar el perfil del usuario con la URL pública de la imagen
         const { error: updateError } = await supabase
           .from("users")
           .update({ pfp: publicUrl })
@@ -87,9 +103,20 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
             theme: "colored",
             transition: Bounce,
           });
+        } else {
+          // Si todo fue bien, se puede realizar una recarga de la página o actualizar el estado
+          window.location.reload();
         }
+      } else {
+        toast.error("Error al obtener la URL de la imagen", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+          transition: Bounce,
+        });
       }
     } catch (error: any) {
+      // Manejo de errores generales
       toast.error("Error uploading image", {
         position: "top-right",
         autoClose: 5000,
@@ -111,7 +138,14 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
     >
       <input {...getInputProps()} className="hidden" />
       {image ? (
-        <Image src={image} height={300} width={300} alt="User Avatar" />
+        <Image
+          src={image}
+          alt="User Avatar"
+          layout="responsive"
+          width={300}
+          height={300}
+          style={{ objectFit: "cover" }}
+        />
       ) : (
         !isHovered && (
           <div className="absolute inset-0 bg-accent bg-opacity-4  flex justify-center items-center ">
