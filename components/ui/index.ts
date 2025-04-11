@@ -7,6 +7,4 @@ export { MainContainer } from "./MainContainer";
 export { OrDiv } from "./OrDiv";
 export { ToastContainerComponent } from "./ToastContainer";
 export * from "./SwitcherDropdownMenu";
-export { ProfileInput } from "./ProfileInput";
-export { ProfileLabel } from "./ProfileLabel";
 export { ToastButton } from "./ToastButton";

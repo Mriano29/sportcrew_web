@@ -15,6 +15,7 @@ import {
   Profile,
 } from "@/components/DashboardPages";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 // Crear cliente de Supabase
 const supabase = createClient(
@@ -69,6 +70,9 @@ export default function Dashboard() {
 
   return (
     <main className="h-full w-full flex flex-row">
+      <div className="absolute top-4 right-4">
+        <ThemeSwitcher />
+      </div>
       <DashboardNavigation sections={sections} />
     </main>
   );
