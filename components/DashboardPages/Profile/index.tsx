@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 //Elements
 import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
-import { LoadingScreen } from "@/components/ui";
+import { AddPostButton, LoadingScreen } from "@/components/ui";
 import { UserPosts } from "@/components/UserPosts";
 
 // Supabase

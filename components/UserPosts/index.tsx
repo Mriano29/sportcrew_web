@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { Bounce, toast } from "react-toastify";
-import { LoadingScreen } from "../ui";
-import AddPostButton from "../ui/AddPostButton";
+import { AddPostButton, LoadingScreen } from "../ui";
+import AddIcon from '@mui/icons-material/Add';
 
 // Supabase
 const supabase = createClient(
@@ -93,15 +93,37 @@ export const UserPosts = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          className="relative aspect-square bg-gray-100 rounded overflow-hidden shadow"
-        >
-          <Image src={post.media || "posst"} alt="post" width={100} height={100}/>
+    <div className="relative w-full h-full mb-[52px] overflow-y-auto p-5 lg:mb-0">
+      <div className="grid grid-cols-3 gap-1 lg:gap-4">
+        <div className="relative w-full h-full group">
+          <button className="h-full w-full bg-accent-foreground transition-transform duration-300 ease-in-out group-hover:scale-105">
+            <AddIcon
+              sx={{
+                fontSize: {
+                  sm: 30,
+                  md: 36,
+                  lg: 60,
+                },
+              }}
+            />
+          </button>
         </div>
-      ))}
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="relative aspect-square bg-accent rounded overflow-hidden shadow"
+          >
+            <div className="relative w-full h-full group">
+              <Image
+                src={post.media || "post"}
+                alt="post"
+                fill
+                className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

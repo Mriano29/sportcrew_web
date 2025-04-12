@@ -1,7 +1,7 @@
 import AddPostModal from "@/components/AddPostsModal";
 import { useState } from "react";
 
-export default function AddPostButton() {
+export function AddPostButton() {
   const [open, setOpen] = useState(false);
 
   return (

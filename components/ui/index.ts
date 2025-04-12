@@ -7,3 +7,4 @@ export { MainContainer } from "./MainContainer";
 export { OrDiv } from "./OrDiv";
 export { ToastContainerComponent } from "./ToastContainer";
 export * from "./SwitcherDropdownMenu";
+export { AddPostButton } from "./AddPostButton";
