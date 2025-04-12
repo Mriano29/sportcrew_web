@@ -6,7 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "@/components/ui";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { UserPosts } from "@/components/UserPosts";
 
 // Supabase
 const supabase = createClient(
@@ -126,6 +126,7 @@ export const Profile = () => {
         {userData?.desc}
       </p>
       <div className="w-full border border-accent-foreground" />
+      <UserPosts />
     </main>
   );
 };
