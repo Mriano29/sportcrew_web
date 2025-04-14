@@ -31,7 +31,7 @@ export default function AddPostModal({ open, onClose }: Props) {
 
     const user = sessionData?.session?.user;
     if (sessionError || !user) {
-      toast.error("Error obteniendo usuario", {
+      toast.error("Error retrieving user", {
         position: "top-right",
         autoClose: 5000,
         theme: "colored",
@@ -42,7 +42,6 @@ export default function AddPostModal({ open, onClose }: Props) {
     }
 
     try {
-      // Paso 1: Insertar el post sin imagen aún
       const { data: insertedPost, error: insertError } = await supabase
         .from("posts")
         .insert({ content, userId: user.id })
@@ -53,43 +52,37 @@ export default function AddPostModal({ open, onClose }: Props) {
 
       let mediaUrl = null;
 
-      // Paso 2: Si hay imagen, subirla al bucket
       if (imageFile) {
         const path = `${user.id}/posts/${insertedPost.id}.jpg`;
-
         const { error: uploadError } = await supabase.storage
           .from("sportcrew-media")
           .upload(path, imageFile);
-
         if (uploadError) throw uploadError;
-
-        // Paso 3: Obtener URL pública
         const { data: publicUrlData } = supabase.storage
           .from("sportcrew-media")
           .getPublicUrl(path);
 
         mediaUrl = publicUrlData.publicUrl;
 
-        // Paso 4: Actualizar post con media_url
         await supabase
           .from("posts")
           .update({ media: mediaUrl })
           .eq("id", insertedPost.id);
       }
 
-      toast.success("¡Post publicado!", {
+      toast.success("Post published", {
         position: "top-right",
         autoClose: 4000,
         theme: "colored",
         transition: Bounce,
       });
 
-      // Reset form
       setContent("");
       setImageFile(null);
       onClose();
+      window.location.reload();
     } catch (err: any) {
-      toast.error("Error al publicar post: " + err.message, {
+      toast.error("Error publishing post: " + err.message, {
         position: "top-right",
         autoClose: 5000,
         theme: "colored",
@@ -114,7 +107,7 @@ export default function AddPostModal({ open, onClose }: Props) {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="¿Qué estás pensando?"
+            placeholder="What are you thinking?"
             className="w-full p-3 border border-gray-300 rounded-lg resize-none h-32 mb-4"
             required
           />
@@ -123,13 +116,13 @@ export default function AddPostModal({ open, onClose }: Props) {
             <ImageDropzone onFileAccepted={setImageFile} />
             {imageFile && (
               <p className="mt-2 text-sm text-gray-600">
-                Imagen seleccionada: {imageFile.name}
+                Selected image: {imageFile.name}
               </p>
             )}
           </div>
 
           <FormButton
-            title={loading ? "Publicando..." : "Publish"}
+            title={loading ? "Publishing..." : "Publish"}
             type="submit"
             disabled={loading}
           />

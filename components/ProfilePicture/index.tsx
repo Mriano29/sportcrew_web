@@ -36,19 +36,17 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
 
   const handleImageUpload = async (file: File) => {
     try {
-      // Obtener usuario autenticado
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        throw new Error("No se pudo obtener el usuario");
+        throw new Error("Unable to retrieve user");
       }
 
       const fileName = `${user.id}/profile_picture.jpg`;
 
-      // Eliminar la imagen anterior si existe
       const { error: deleteError } = await supabase.storage
         .from("sportcrew-media")
         .remove([fileName]);
@@ -57,7 +55,6 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
         throw new Error(deleteError.message);
       }
 
-      // Subir la nueva imagen
       const { error: uploadError } = await supabase.storage
         .from("sportcrew-media")
         .upload(fileName, file, {
@@ -76,10 +73,9 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
           theme: "colored",
           transition: Bounce,
         });
-        return; // Termina la función si ocurre un error
+        return;
       }
 
-      // Obtener la URL pública de la imagen
       const { data: publicUrlData } = supabase.storage
         .from("sportcrew-media")
         .getPublicUrl(fileName);
@@ -87,28 +83,25 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
       let publicUrl = publicUrlData?.publicUrl;
 
       if (publicUrl) {
-        // Añadir un timestamp para forzar la recarga de la imagen
         publicUrl = `${publicUrl}?t=${new Date().getTime()}`;
 
-        // Actualizar el perfil del usuario con la URL pública de la imagen
         const { error: updateError } = await supabase
           .from("users")
           .update({ pfp: publicUrl })
           .eq("id", user.id);
 
         if (updateError) {
-          toast.error("No se pudo actualizar el perfil", {
+          toast.error("Unable to update profile", {
             position: "top-right",
             autoClose: 5000,
             theme: "colored",
             transition: Bounce,
           });
         } else {
-          // Si todo fue bien, se puede realizar una recarga de la página o actualizar el estado
           window.location.reload();
         }
       } else {
-        toast.error("Error al obtener la URL de la imagen", {
+        toast.error("Error retrieving image URL", {
           position: "top-right",
           autoClose: 5000,
           theme: "colored",
@@ -116,7 +109,6 @@ export const ProfilePicture: React.FC<ProfilePictureProps> = ({ image }) => {
         });
       }
     } catch (error: any) {
-      // Manejo de errores generales
       toast.error("Error uploading image", {
         position: "top-right",
         autoClose: 5000,
