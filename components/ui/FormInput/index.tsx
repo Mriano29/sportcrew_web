@@ -2,8 +2,8 @@
 interface CustomInputProps {
   title?: string;
   type: "email" | "password" | "text";
-  value: string;
-  placeholder: string;
+  value?: string;
+  placeholder?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

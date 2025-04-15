@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Image from "next/image";
-
-//Elements
-import {
-  LoadingScreen,
-} from "@/components/ui";
+import { createClient } from "@supabase/supabase-js";
 import { Bounce, toast } from "react-toastify";
-import { ProfilePicture } from "@/components/ProfilePicture";
+import { FormInput } from "@/components/ui";
 
 // Supabase
 const supabase = createClient(
@@ -26,11 +22,12 @@ interface User {
   pfp: string;
 }
 
-export const AccountSettings = () => {
+export const AccountSettings: React.FC = () => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [userName, setUserName] = useState<String>("");
+  const [userDesc, setUserDesc] = useState<String>("");
+  const [userEmail, setUserEmail] = useState<String>("");
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,10 +49,16 @@ export const AccountSettings = () => {
         setLoading(false);
         return;
       }
+
       const user = sessionData?.session?.user;
 
       if (user) {
         const userId = user.id;
+        const userEmail = user.email;
+
+        if (userEmail) {
+          setUserEmail(userEmail);
+        }
 
         const { data, error } = await supabase
           .from("users")
@@ -78,8 +81,6 @@ export const AccountSettings = () => {
           return;
         } else {
           setUserData(data);
-          setUser(data?.user || "");
-          setDesc(data?.desc || "");
         }
       }
       setLoading(false);
@@ -88,100 +89,68 @@ export const AccountSettings = () => {
     fetchUserData();
   }, []);
 
-  const handleChangeUser = (e: string) => {
-    setUser(e);
-  };
+  const handleSave = () => {};
 
-  const handleChangeDesc = (e: string) => {
-    setDesc(e);
-  };
+  function handleChangeusername(event: ChangeEvent<HTMLInputElement>): void {
+    const { value } = event.target;
+    setUserName(value);
+  }
 
-  const handleSaveChanges = async () => {
-    const { error } = await supabase
-      .from("users")
-      .update({ user, desc })
-      .eq("id", userData?.id);
-
-    if (error) {
-      toast.error(error.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-    } else {
-      toast.dismiss();
-      toast.success("Changes saved successfully!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-    }
-  };
-
-  if (loading) {
-    return <LoadingScreen />;
+  function handleChangeDesc(event: ChangeEvent<HTMLInputElement>): void {
+    const { value } = event.target;
+    setUserDesc(value);
   }
 
   return (
-    <>
-    <div className="h-full w-full flex flex-col lg:flex-row p-2">
-      <div className="flex flex-row lg:flex-col gap-5 bg-card p-5 border-2  border-border rounded-3xl">
-        <ProfilePicture image={userData?.pfp} />
-        <div className="flex flex-col gap-3">
-          <button onClick={handleSaveChanges}>guardar</button>
-          <div className="flex flex-row lg:flex-col gap-3 align">
-
-          </div>
-        </div>
+    <div className="w-full h-full  px-2 py-3 lg:px-7 lg:py-5 bg-background">
+      <div className="flex flex-row gap-2 justify-center md:justify-start items-center p-5">
+        <SettingsIcon sx={{ fontSize: 40 }} />
+        <h2 className="text-3xl font-bold">Settings</h2>
       </div>
-      <div className=""></div>
-    </div>
-
-
-    
-    <main className="h-full w-full flex flex-col items-center px-2 py-3 lg:px-7 lg:py-5 gap-4">
-      <div className="flex flex-row gap-2 lg:gap-8 w-full justify-center items-center">
-        <div className="relative w-[25px] h-[25px] min-h-20 min-w-20">
-          <Image
-            src={userData?.pfp || ""}
-            alt="User profile picture"
-            fill
-            className="rounded-3xl object-cover"
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="w-full flex flex-col gap-4 p-5 justify-center items-center"
+      >
+        <div className="flex flex-col md:flex-row gap-2 w-full md:w-[500px] lg:w-[600px] border-2 border-border p-2 rounded-3xl items-center lg:items-center">
+          <div className="relative w-[100px] h-[100px]">
+            {userData?.pfp ? (
+              <Image
+                src={userData.pfp}
+                alt="User profile picture"
+                fill
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
+                <span>No Image</span>
+              </div>
+            )}
+          </div>
+          <h1 className="font-bold">{userEmail}</h1>
+          <button className="md:ml-auto border-2 p-1 rounded-xl bg-accent text-white sm:w-fit w-[80%]">
+            Change image
+          </button>
+        </div>
+        <div className="flex flex-col gap-2 w-full  p-2 items-center">
+          <FormInput
+            type={"text"}
+            value={userData?.user}
+            onChange={handleChangeusername}
+          />
+          <FormInput
+            type={"text"}
+            value={userData?.desc}
+            onChange={handleChangeDesc}
           />
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="">
-            <h1 className="font-semibold text-center py-2">{userData?.user}</h1>
-            <div >
-              <h3 className="text-pretty">{userData?.desc}</h3>
-            </div>
-          </div>
-          <div className="hidden md:flex flex-row gap-4 justify-center">
-            <h5>{userData?.posts} posts</h5>
-            <h5>{userData?.followers} followers</h5>
-            <h5>{userData?.followed} followed</h5>
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-row gap-4 justify-center md:hidden">
-        <h5>{userData?.posts} posts</h5>
-        <h5>{userData?.followers} followers</h5>
-        <h5>{userData?.followed} followed</h5>
-      </div>
-      <div>posts</div>
-    </main>
-    </>
+        <button
+          type="button"
+          onClick={handleSave}
+          className="w-fit border-2 p-2 rounded-xl"
+        >
+          Save
+        </button>
+      </form>
+    </div>
   );
 };
