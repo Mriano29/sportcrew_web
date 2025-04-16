@@ -1,6 +1,6 @@
 //Types
 interface CustomInputProps {
-  title?: string;
+  title: string;
   type: "email" | "password" | "text";
   value?: string;
   placeholder?: string;
@@ -16,7 +16,7 @@ export const FormInput: React.FC<CustomInputProps> = ({
 }) => {
   return (
     <div>
-      {title && <label className="block text-sm font-medium">{title}</label>}
+      <label className="block text-sm font-medium">{title}</label>
       <input
         type={type}
         value={value}

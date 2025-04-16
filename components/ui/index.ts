@@ -8,3 +8,6 @@ export { OrDiv } from "./OrDiv";
 export { ToastContainerComponent } from "./ToastContainer";
 export * from "./SwitcherDropdownMenu";
 export { AddPostButton } from "./AddPostButton";
+export { SettingsInput } from "./SettingsInput";
+export { SettingsInputArea } from "./SettingsInputArea";
+export { SettingsButton } from "./SettingsButton";
