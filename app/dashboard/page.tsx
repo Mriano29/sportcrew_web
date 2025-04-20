@@ -70,7 +70,7 @@ export default function Dashboard() {
 
   return (
     <main className="h-full w-full flex flex-row">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 hidden md:block">
         <ThemeSwitcher />
       </div>
       <DashboardNavigation sections={sections} />

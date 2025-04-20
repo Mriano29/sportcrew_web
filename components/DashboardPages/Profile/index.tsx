@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 //Elements
 import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
-import { AddPostButton, LoadingScreen } from "@/components/ui";
+import { LoadingScreen } from "@/components/ui";
 import { UserPosts } from "@/components/UserPosts";
 
 // Supabase
@@ -16,17 +16,16 @@ const supabase = createClient(
 
 //Types
 interface User {
-  id: any;
   user: string;
   desc: string;
-  posts: number;
-  followers: number;
-  followed: number;
   pfp: string;
 }
 
 export const Profile = () => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [postNumber, setPostNumber] = useState<number>(0);
+  const [followedNumber, setFollowedNumber] = useState<number>(0);
+  const [followersNumber, setFollowersNumber] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,14 +54,29 @@ export const Profile = () => {
       if (user) {
         const userId = user.id;
 
-        const { data, error } = await supabase
+        const { data: fetchedUser, error: fetchedUserError } = await supabase
           .from("users")
-          .select("*")
+          .select("user, desc, pfp")
           .eq("id", userId)
           .single();
 
-        if (error) {
-          toast.error(error.message, {
+        const { count: postCount, error: postCountError } = await supabase
+          .from("posts")
+          .select("*", { count: "exact", head: true })
+          .eq("userId", userId);
+
+        const { count: followedCount, error: followedCountError } = await supabase
+          .from("followed")
+          .select("*", { count: "exact", head: true })
+          .eq("id", userId);
+
+        const { count: followersCount, error: followersCountError } = await supabase
+          .from("followers")
+          .select("*", { count: "exact", head: true })
+          .eq("id", userId);
+
+        if (fetchedUserError) {
+          toast.error(fetchedUserError.message, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -74,8 +88,53 @@ export const Profile = () => {
             transition: Bounce,
           });
           return;
+        } else if (postCountError) {
+          toast.error(postCountError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+          return;
+
+        } else if (followedCountError) {
+          toast.error(followedCountError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+          return;
+
+        } else if (followersCountError) {
+          toast.error(followersCountError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+          return;
+
         } else {
-          setUserData(data);
+          setUserData(fetchedUser);
+          setPostNumber(postCount || 0);
+          setFollowedNumber(followedCount || 0);
+          setFollowersNumber(followersCount || 0);
         }
       }
       setLoading(false);
@@ -105,15 +164,15 @@ export const Profile = () => {
           </h1>
           <div className="flex gap-4">
             <div className="flex flex-col items-center">
-              <span className="font-semibold">{userData?.posts}</span>
+              <span className="font-semibold">{postNumber}</span>
               <span className="text-sm">Posts</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-semibold">{userData?.followers}</span>
+              <span className="font-semibold">{followersNumber}</span>
               <span className="text-sm">Followers</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-semibold">{userData?.followed}</span>
+              <span className="font-semibold">{followedNumber}</span>
               <span className="text-sm">Following</span>
             </div>
           </div>

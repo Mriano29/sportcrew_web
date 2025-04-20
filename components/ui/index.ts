@@ -11,3 +11,4 @@ export { AddPostButton } from "./AddPostButton";
 export { SettingsInput } from "./SettingsInput";
 export { SettingsInputArea } from "./SettingsInputArea";
 export { SettingsButton } from "./SettingsButton";
+export { HomeSearchBar } from "./HomeSearchBar";
