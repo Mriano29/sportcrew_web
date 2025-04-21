@@ -1,6 +1,6 @@
 //Types
 interface CustomInputProps {
-  title: string;
+  title?: string;
   type: "email" | "password" | "text";
   value?: string;
   placeholder?: string;
