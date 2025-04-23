@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { createClient } from "@supabase/supabase-js";
 import { Bounce, toast } from "react-toastify";
-import { AddPostButton, LoadingScreen } from "../ui";
-import AddIcon from "@mui/icons-material/Add";
-import PostIcon from "@mui/icons-material/Image";
+import { LoadingScreen } from "../ui";
 import { PostInfo } from "../PostInfo";
 
 // Supabase
@@ -20,6 +18,10 @@ type Post = {
   created_at: string;
   likes: number;
   comments: number;
+  users: {
+    pfp: string;
+    user: string;
+  };
 };
 
 export const News = () => {
@@ -85,7 +87,7 @@ export const News = () => {
         for (const userId of followedUserIds) {
           const { data: postsData, error: postsError } = await supabase
             .from("posts")
-            .select("*")
+            .select("*, users(user, pfp)")
             .eq("userId", userId)
             .order("created_at", { ascending: false })
             .limit(5);
@@ -161,8 +163,18 @@ export const News = () => {
               className="relative aspect-square bg-accent rounded overflow-hidden shadow"
               onClick={() => handleShowPostInfo(post)}
             >
-              <div className="bg-accent p-3">
-                <h1>usuario</h1>
+              <div className="flex flex-row w-full items-center p-3 gap-3">
+                <div className="relative w-[30px] h-[30px]">
+                  <Image
+                    src={post.users.pfp || ""}
+                    alt="User profile picture"
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                </div>
+                <div className="bg-accent font-bold">
+                  <h1>{post.users.user}</h1>
+                </div>
               </div>
               <div className="relative w-full h-full group">
                 <Image
