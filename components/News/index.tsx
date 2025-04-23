@@ -26,7 +26,6 @@ type Post = {
 
 export const News = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [followedUsers, setFollowedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [openPostInfo, setOpenPostInfo] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post>();
@@ -79,7 +78,6 @@ export const News = () => {
 
         const followedUserIds =
           followedData?.map((item) => item.followed_user) || [];
-        setFollowedUsers(followedUserIds);
 
         // 2. Obtener últimos 5 posts por cada usuario seguido
         const allPosts: Post[] = [];
