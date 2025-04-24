@@ -52,8 +52,8 @@ export function HomeSearchBar() {
 
         const { data: followedUsers, error: followError } = await supabase
             .from("followed")
-            .select("followed_user")
-            .eq("id", currentUser?.id);
+            .select("followedUser")
+            .eq("user", currentUser?.id);
 
         if (followError) {
             console.error("Error fetching follows:", followError.message);
@@ -61,7 +61,7 @@ export function HomeSearchBar() {
             return;
         }
 
-        const followedIds = new Set(followedUsers?.map((f) => f.followed_user));
+        const followedIds = new Set(followedUsers?.map((f) => f.followedUser));
 
         const resultsWithFollowed = (userData as User[]).map((user) => ({
             ...user,
@@ -97,15 +97,15 @@ export function HomeSearchBar() {
                 .from("followed")
                 .delete()
                 .match({
-                    id: currentUser.id,
-                    followed_user: targetUser.id,
+                    user: currentUser.id,
+                    followedUser: targetUser.id,
                 });
 
             const { error: removeFollowerError } = await supabase
                 .from("followers")
                 .delete()
                 .match({
-                    id: targetUser.id,
+                    user: targetUser.id,
                     follower: currentUser.id,
                 });
 
@@ -125,14 +125,14 @@ export function HomeSearchBar() {
             const { error: followError } = await supabase
                 .from("followed")
                 .insert({
-                    id: currentUser.id,
-                    followed_user: targetUser.id,
+                    user: currentUser.id,
+                    followedUser: targetUser.id,
                 });
 
             const { error: addFollowerError } = await supabase
                 .from("followers")
                 .insert({
-                    id: targetUser.id,
+                    user: targetUser.id,
                     follower: currentUser.id,
                 });
 

@@ -68,12 +68,12 @@ export const Profile = () => {
         const { count: followedCount, error: followedCountError } = await supabase
           .from("followed")
           .select("*", { count: "exact", head: true })
-          .eq("id", userId);
+          .eq("user", userId);
 
         const { count: followersCount, error: followersCountError } = await supabase
           .from("followers")
           .select("*", { count: "exact", head: true })
-          .eq("id", userId);
+          .eq("user", userId);
 
         if (fetchedUserError) {
           toast.error(fetchedUserError.message, {

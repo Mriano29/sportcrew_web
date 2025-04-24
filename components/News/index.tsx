@@ -62,8 +62,8 @@ export const News = () => {
         // 1. Obtener usuarios seguidos
         const { data: followedData, error: followedError } = await supabase
           .from("followed")
-          .select("followed_user")
-          .eq("id", user.id);
+          .select("followedUser")
+          .eq("user", user.id);
 
         if (followedError) {
           toast.error(followedError.message, {
@@ -77,7 +77,7 @@ export const News = () => {
         }
 
         const followedUserIds =
-          followedData?.map((item) => item.followed_user) || [];
+          followedData?.map((item) => item.followedUser) || [];
 
         // 2. Obtener últimos 5 posts por cada usuario seguido
         const allPosts: Post[] = [];
