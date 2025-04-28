@@ -1,15 +1,10 @@
 import ClearIcon from "@mui/icons-material/Clear";
-import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { FormInput } from "../ui";
 import SendIcon from "@mui/icons-material/Send";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/client";
 
 export const PostInfo = ({
   open,

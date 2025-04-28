@@ -2,16 +2,11 @@
 //Core
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 
 //Elements
 import { FormButton, FormInput, OrDiv } from "../ui";
 import { Bounce, toast } from "react-toastify";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/client";
 
 interface SignUpFormProps {}
 

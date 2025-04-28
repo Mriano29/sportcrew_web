@@ -1,12 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
 import React, { useState, useRef, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from '@/lib/client';
 
 interface User {
     id: string;

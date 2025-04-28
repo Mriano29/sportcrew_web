@@ -1,18 +1,13 @@
 //Core
 import React, { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 
 //Elements
 import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "@/components/ui";
 import { UserPosts } from "@/components/UserPosts";
+import { supabase } from "@/lib/client";
 
-// Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 //Types
 interface User {
@@ -65,15 +60,17 @@ export const Profile = () => {
           .select("*", { count: "exact", head: true })
           .eq("userId", userId);
 
-        const { count: followedCount, error: followedCountError } = await supabase
-          .from("followed")
-          .select("*", { count: "exact", head: true })
-          .eq("user", userId);
+        const { count: followedCount, error: followedCountError } =
+          await supabase
+            .from("followed")
+            .select("*", { count: "exact", head: true })
+            .eq("user", userId);
 
-        const { count: followersCount, error: followersCountError } = await supabase
-          .from("followers")
-          .select("*", { count: "exact", head: true })
-          .eq("user", userId);
+        const { count: followersCount, error: followersCountError } =
+          await supabase
+            .from("followers")
+            .select("*", { count: "exact", head: true })
+            .eq("user", userId);
 
         if (fetchedUserError) {
           toast.error(fetchedUserError.message, {
@@ -101,7 +98,6 @@ export const Profile = () => {
             transition: Bounce,
           });
           return;
-
         } else if (followedCountError) {
           toast.error(followedCountError.message, {
             position: "top-right",
@@ -115,7 +111,6 @@ export const Profile = () => {
             transition: Bounce,
           });
           return;
-
         } else if (followersCountError) {
           toast.error(followersCountError.message, {
             position: "top-right",
@@ -129,7 +124,6 @@ export const Profile = () => {
             transition: Bounce,
           });
           return;
-
         } else {
           setUserData(fetchedUser);
           setPostNumber(postCount || 0);
@@ -155,6 +149,7 @@ export const Profile = () => {
             src={userData?.pfp || ""}
             alt="User profile picture"
             fill
+            sizes="(max-width: 768px) 100px, (max-width: 1024px) 175px, 250px"
             className="rounded-full object-cover"
           />
         </div>

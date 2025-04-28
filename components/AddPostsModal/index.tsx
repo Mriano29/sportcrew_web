@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { FormButton } from "../ui";
 import ClearIcon from "@mui/icons-material/Clear";
-import { createClient } from "@supabase/supabase-js";
 import ImageDropzone from "../ImageDropZone";
 import { Bounce, toast } from "react-toastify";
+import { supabase } from "@/lib/client";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 type Props = {
   open: boolean;

@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Image from "next/image";
-import { createClient } from "@supabase/supabase-js";
 import { Bounce, toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import {
@@ -10,11 +9,7 @@ import {
   SettingsInput,
   SettingsInputArea,
 } from "@/components/ui";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/client";
 
 interface User {
   id: any;

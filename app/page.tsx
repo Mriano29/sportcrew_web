@@ -2,19 +2,17 @@
 //Core
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/lib/client";
+import Image from "next/image";
 
 // Elements
-import Image from "next/image";
 import { LoadingScreen, MainContainer } from "@/components/ui";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SignInForm } from "@/components/SignInForm";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+/**
+ * Search for the clients cookie in the nav
+ */
 const getCookie = (name: string) => {
   const matches = document.cookie.match(
     new RegExp(
@@ -28,6 +26,9 @@ export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
+  /**
+   * On render checks if there is a saved cookie
+   */
   useEffect(() => {
     const token = getCookie("sb_token");
 

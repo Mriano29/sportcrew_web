@@ -11,8 +11,9 @@ export const DashboardLogo = () => {
         className="object-contain"
         src="/images/SportCrewLogoTitle.png"
         width={240}
-        height={0}
+        height={2}
         alt="SportCrew Logo"
+        priority
       />
     </div>
   );

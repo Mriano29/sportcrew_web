@@ -1,12 +1,7 @@
 import { LoadingScreen } from "@/components/ui";
-import { createClient } from "@supabase/supabase-js";
-import React, { useEffect, useState, KeyboardEvent, useRef } from "react";
+import { supabase } from "@/lib/client";
+import React, { useEffect, useState, KeyboardEvent } from "react";
 import { Bounce, toast } from "react-toastify";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 type Users = {
   id: string;

@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { createClient } from "@supabase/supabase-js";
 import { Bounce, toast } from "react-toastify";
 import { AddPostButton, LoadingScreen } from "../ui";
 import AddIcon from "@mui/icons-material/Add";
 import AddPostModal from "../AddPostsModal";
 import PostIcon from "@mui/icons-material/Image";
 import { PostInfo } from "../PostInfo";
-
-// Supabase
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabase } from "@/lib/client";
 
 type Post = {
   id: any;
@@ -153,6 +147,7 @@ export const UserPosts = () => {
                     src={post.media}
                     alt="post"
                     fill
+                    sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
                     className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                   />
                 ) : (

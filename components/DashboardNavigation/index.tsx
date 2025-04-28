@@ -1,13 +1,13 @@
 "use client";
 //Core
 import React, { ReactNode, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 
 //Elements
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import { Logout } from "@mui/icons-material";
 import { DashboardLogo } from "../ui";
+import { supabase } from "@/lib/client";
 
 //Types
 interface Sections {
@@ -19,12 +19,6 @@ interface Sections {
 interface DashboardNavigationProps {
   sections: Sections[];
 }
-
-//Client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export const DashboardNavigation: React.FC<DashboardNavigationProps> = ({
   sections,
