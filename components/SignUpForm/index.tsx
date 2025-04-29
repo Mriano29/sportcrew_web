@@ -20,6 +20,26 @@ export const SignUpForm: React.FC<SignUpFormProps> = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (!username.trim()) {
+      toast.error("Username is required.", {
+        position: "top-left",
+        autoClose: 5000,
+        theme: "colored",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (password !== passwordRepeat) {
+      toast.error("Passwords do not match.", {
+        position: "top-left",
+        autoClose: 5000,
+        theme: "colored",
+        transition: Bounce,
+      });
+      return;
+    }
+
     const { error, data } = await supabase.auth.signUp({
       email,
       password,
@@ -31,58 +51,34 @@ export const SignUpForm: React.FC<SignUpFormProps> = () => {
       toast.error(error.message, {
         position: "top-left",
         autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
         theme: "colored",
         transition: Bounce,
       });
     } else {
-      if (password !== passwordRepeat) {
-        toast.error("Passwords do not match.", {
+      const { error: insertError } = await supabase.from("users").insert([
+        {
+          id: user?.id,
+          user: username,
+        },
+      ]);
+
+      if (insertError) {
+        toast.error("Error creating user profile: " + insertError.message, {
           position: "top-left",
           autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "colored",
           transition: Bounce,
         });
         return;
-      } else {
-        const { error: insertError } = await supabase.from("users").insert([
-          {
-            id: user?.id,
-            user: username,
-          },
-        ]);
-        if (insertError) {
-          toast.error("Error creating user profile: " + insertError.message, {
-            position: "top-left",
-            autoClose: 5000,
-            theme: "colored",
-            transition: Bounce,
-          });
-          return;
-        } else {
-          toast.success("Confirm your email to log in!", {
-            position: "top-left",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-          });
-          router.push("/");
-        }
       }
+
+      toast.success("Confirm your email to log in!", {
+        position: "top-left",
+        autoClose: 5000,
+        theme: "colored",
+        transition: Bounce,
+      });
+      router.push("/");
     }
   };
 
@@ -106,7 +102,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = () => {
         <FormInput
           title="Username"
           type="text"
-          placeholder="(optional)"
+          placeholder="Choose a username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />

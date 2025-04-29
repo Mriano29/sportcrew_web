@@ -1,6 +1,6 @@
 import { LoadingScreen } from "@/components/ui";
 import { supabase } from "@/lib/client";
-import React, { useEffect, useState, KeyboardEvent } from "react";
+import React, { useEffect, useState, KeyboardEvent, useRef } from "react";
 import { Bounce, toast } from "react-toastify";
 
 type Users = {
@@ -24,7 +24,16 @@ export const Chats = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
-  const [channel, setChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [channel, setChannel] = useState<ReturnType<
+    typeof supabase.channel
+  > | null>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +42,12 @@ export const Chats = () => {
           await supabase.auth.getSession();
 
         if (sessionError) {
-          toast.error(sessionError.message, { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+          toast.error(sessionError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            theme: "colored",
+            transition: Bounce,
+          });
           setLoading(false);
           return;
         }
@@ -45,10 +59,18 @@ export const Chats = () => {
         }
 
         const { data: followedUsers, error: followedUsersError } =
-          await supabase.from("followed").select("followedUser").eq("user", user.id);
+          await supabase
+            .from("followed")
+            .select("followedUser")
+            .eq("user", user.id);
 
         if (followedUsersError) {
-          toast.error(followedUsersError.message, { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+          toast.error(followedUsersError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            theme: "colored",
+            transition: Bounce,
+          });
           setLoading(false);
           return;
         }
@@ -66,7 +88,12 @@ export const Chats = () => {
           .in("id", followedUserIds);
 
         if (usersError) {
-          toast.error(usersError.message, { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+          toast.error(usersError.message, {
+            position: "top-right",
+            autoClose: 5000,
+            theme: "colored",
+            transition: Bounce,
+          });
           setLoading(false);
           return;
         }
@@ -74,7 +101,12 @@ export const Chats = () => {
         setUsers(usersData || []);
       } catch (err) {
         console.error("Unexpected error:", err);
-        toast.error("An unexpected error occurred", { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+        toast.error("An unexpected error occurred", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+          transition: Bounce,
+        });
       } finally {
         setLoading(false);
       }
@@ -100,12 +132,19 @@ export const Chats = () => {
         const { data, error } = await supabase
           .from("chats")
           .select("*")
-          .or(`and(sender.eq.${user.id},receiver.eq.${selectedUser.id}),and(sender.eq.${selectedUser.id},receiver.eq.${user.id})`)
+          .or(
+            `and(sender.eq.${user.id},receiver.eq.${selectedUser.id}),and(sender.eq.${selectedUser.id},receiver.eq.${user.id})`
+          )
           .order("created_at", { ascending: true });
 
         if (error) {
           console.error("Error fetching messages:", error);
-          toast.error("Error loading messages", { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+          toast.error("Error loading messages", {
+            position: "top-right",
+            autoClose: 5000,
+            theme: "colored",
+            transition: Bounce,
+          });
           setLoading(false);
           return;
         }
@@ -113,7 +152,12 @@ export const Chats = () => {
         setMessages(data || []);
       } catch (err) {
         console.error("Unexpected error fetching messages:", err);
-        toast.error("An unexpected error occurred while loading messages", { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+        toast.error("An unexpected error occurred while loading messages", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+          transition: Bounce,
+        });
       } finally {
         setLoading(false);
       }
@@ -126,13 +170,13 @@ export const Chats = () => {
   useEffect(() => {
     const subscribeToMessages = async () => {
       if (channel) {
-        await supabase.removeChannel(channel);  // Cleanup previous subscription
+        await supabase.removeChannel(channel); // Cleanup previous subscription
       }
 
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (!user || !selectedUser) {
-        console.log('No user or selected user, skipping subscription');
+        console.log("No user or selected user, skipping subscription");
         return;
       }
 
@@ -146,11 +190,15 @@ export const Chats = () => {
             table: "chats",
           },
           (payload) => {
-            console.log('Received message:', payload);
+            console.log("Received message:", payload);
             const newMessage = payload.new as Message;
-            if (newMessage && (newMessage.sender === selectedUser?.id || newMessage.receiver === selectedUser?.id)) {
-              setMessages(prev => {
-                if (prev.some(msg => msg.id === newMessage.id)) {
+            if (
+              newMessage &&
+              (newMessage.sender === selectedUser?.id ||
+                newMessage.receiver === selectedUser?.id)
+            ) {
+              setMessages((prev) => {
+                if (prev.some((msg) => msg.id === newMessage.id)) {
                   return prev;
                 }
                 return [...prev, newMessage];
@@ -176,7 +224,7 @@ export const Chats = () => {
   }, [selectedUser]);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -198,7 +246,12 @@ export const Chats = () => {
     });
 
     if (error) {
-      toast.error("Failed to send message", { position: "top-right", autoClose: 5000, theme: "colored", transition: Bounce });
+      toast.error("Failed to send message", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "colored",
+        transition: Bounce,
+      });
       setIsSending(false);
       return;
     }
@@ -226,7 +279,11 @@ export const Chats = () => {
                 role="button"
                 tabIndex={0}
               >
-                <img src={u.pfp} alt={u.user} className="w-10 h-10 rounded-full object-cover" />
+                <img
+                  src={u.pfp}
+                  alt={u.user}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
                 <span className="text-sm font-medium">{u.user}</span>
               </div>
               <div className="w-[95%] border border-gray-400 mx-auto" />
@@ -239,7 +296,11 @@ export const Chats = () => {
         {selectedUser ? (
           <>
             <div className="flex items-center gap-3 p-4 border-b w-full">
-              <img src={selectedUser.pfp} alt={selectedUser.user} className="w-10 h-10 rounded-full object-cover" />
+              <img
+                src={selectedUser.pfp}
+                alt={selectedUser.user}
+                className="w-10 h-10 rounded-full object-cover"
+              />
               <h2 className="text-lg font-semibold">{selectedUser.user}</h2>
             </div>
 
@@ -250,12 +311,14 @@ export const Chats = () => {
                   className={`flex ${msg.sender === selectedUser.id ? "justify-start" : "justify-end"}`}
                 >
                   <div
-                    className={`p-2 rounded max-w-[70%] ${msg.sender === selectedUser.id
-                      ? "bg-accent"
-                      : "bg-accent-foreground text-white"
-                      }`}
+                    className={`p-2 rounded max-w-[70%] ${
+                      msg.sender === selectedUser.id
+                        ? "bg-accent"
+                        : "bg-accent-foreground"
+                    }`}
                   >
                     {msg.message}
+                    <div ref={messagesEndRef} />
                     <div className="text-xs text-right opacity-50">
                       {new Date(msg.created_at).toLocaleTimeString()}
                     </div>
