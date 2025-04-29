@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { AddPostButton, LoadingScreen } from "../ui";
 import AddIcon from "@mui/icons-material/Add";
@@ -143,12 +142,10 @@ export const UserPosts = () => {
             >
               <div className="relative w-full h-full group">
                 {post.media ? (
-                  <Image
+                  <img
                     src={post.media}
                     alt="post"
-                    fill
-                    sizes="(max-width: 768px) 33vw, (max-width: 1024px) 33vw, 33vw"
-                    className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                    className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105 h-full w-full"
                   />
                 ) : (
                   <div className="flex items-center justify-center w-full h-full bg-gray-200 transition-transform duration-300 ease-in-out group-hover:scale-105">

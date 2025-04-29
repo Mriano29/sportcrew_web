@@ -2,16 +2,14 @@
 import { MainContainer } from "@/components/ui/MainContainer";
 import { SignUpForm } from "@/components/SignUpForm";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import Image from "next/image";
 
 export default async function Signup() {
   return (
     <MainContainer>
       <div className="bg-background grid w-full h-full grid-cols-1 lg:grid-cols-2 shadow-lg">
         <div className="relative hidden lg:block w-full h-full">
-          <Image
-            className="object-cover w-full h-full"
-            fill
+          <img
+            className="object-cover w-full h-full"  
             src="/images/sideimage.jpg"
             alt="Login side image"
             sizes="(max-width: 768px) 100vw, 50vw"

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 //Elements
-import Image from "next/image";
 import { FormButton, FormInput, OrDiv } from "../ui";
 import { Bounce, toast } from "react-toastify";
 import { supabase } from "@/lib/client";
@@ -15,7 +14,6 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const setCookie = (name: string, value: string, days: number) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -24,7 +22,6 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
-    setError("");
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -32,7 +29,6 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
     });
 
     if (error) {
-      setError(error.message);
       toast.error(error.message, {
         position: "top-left",
         autoClose: 5000,
@@ -56,7 +52,7 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
   return (
     <div className="bg-card border-2 border-border rounded-3xl p-10">
       <div className="mb-6 flex flex-col justify-center items-center">
-        <Image
+        <img
           className="object-contain"
           src="/images/sportcrewlogo.png"
           width={100}

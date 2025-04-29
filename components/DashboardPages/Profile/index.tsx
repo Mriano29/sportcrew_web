@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from "react";
 
 //Elements
-import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "@/components/ui";
 import { UserPosts } from "@/components/UserPosts";
 import { supabase } from "@/lib/client";
-
 
 //Types
 interface User {
@@ -145,12 +143,10 @@ export const Profile = () => {
     <main className="h-full w-full flex flex-col items-center px-2 py-3 lg:px-7 lg:py-5 gap-4">
       <div className="flex flex-row gap-4 lg:gap-8 w-full justify-center items-center">
         <div className="relative w-[100px] h-[100px] md:w-[175px] md:h-[175px]  lg:w-[250px] lg:h-[250px]">
-          <Image
+          <img
             src={userData?.pfp || ""}
             alt="User profile picture"
-            fill
-            sizes="(max-width: 768px) 100px, (max-width: 1024px) 175px, 250px"
-            className="rounded-full object-cover"
+            className="rounded-full object-cover h-full w-full"
           />
         </div>
         <div className="flex flex-col items-center gap-3">

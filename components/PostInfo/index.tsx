@@ -1,5 +1,4 @@
 import ClearIcon from "@mui/icons-material/Clear";
-import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { FormInput } from "../ui";
@@ -161,8 +160,8 @@ export const PostInfo = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40 p-2 sm:p-4 max-h-[calc(100vh-60px)]">
-      <div className="bg-background rounded-lg shadow-lg w-full h-full max-w-4xl lg:max-w-6xl max-h-[95vh] relative overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40 p-2 sm:p-4 ">
+      <div className="bg-background rounded-lg shadow-lg w-full h-full max-w-4xl lg:max-w-6xl  relative overflow-hidden flex flex-col max-h-[calc(100vh-150px)] lg:max-h-full">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 sm:top-4 sm:right-4 text-foreground hover:text-red-700 text-xl z-50"
@@ -171,7 +170,11 @@ export const PostInfo = ({
         </button>
         <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
           <div className="relative w-full h-64 sm:h-80 lg:h-auto lg:flex-1">
-            <Image src={post.media} alt="post" fill className="object-cover" />
+            <img
+              src={post.media}
+              alt="post"
+              className="object-cover  w-full h-64 sm:h-80 lg:h-full"
+            />
           </div>
           <div className="flex flex-col lg:flex-1 p-2 sm:p-4 h-full">
             <div className="mb-2">
@@ -195,7 +198,7 @@ export const PostInfo = ({
                 <span>{likeCount}</span>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto pr-1">
+            <div className="flex-1 overflow-y-auto pr-1 max-h-[120px]">
               <h1 className="font-bold mb-2">Comments:</h1>
               {commentList.length > 0 ? (
                 commentList.map((comment, index) => (

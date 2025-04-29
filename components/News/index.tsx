@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "../ui";
 import { PostInfo } from "../PostInfo";
 import { supabase } from "@/lib/client";
-
 
 type Post = {
   id: any;
@@ -158,12 +156,11 @@ export const News = () => {
             >
               <div className="flex flex-row w-full items-center p-3 gap-3">
                 <div className="relative w-[30px] h-[30px]">
-                  <Image
+                  <img
                     src={post.users.pfp || ""}
                     alt="User profile picture"
-                    fill
-                    sizes="30px"
-                    className="rounded-full object-cover"
+                    loading="lazy"
+                    className="rounded-full object-cover w-[30px] h-[30px]"
                   />
                 </div>
                 <div className="bg-accent font-bold">
@@ -171,12 +168,11 @@ export const News = () => {
                 </div>
               </div>
               <div className="relative w-full h-full group">
-                <Image
+                <img
                   src={post.media || ""}
                   alt="Post image"
-                  fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                 />
               </div>
             </div>

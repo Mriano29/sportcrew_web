@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Image from "next/image";
 import { Bounce, toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import {
@@ -10,6 +9,7 @@ import {
   SettingsInputArea,
 } from "@/components/ui";
 import { supabase } from "@/lib/client";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: any;
@@ -28,6 +28,7 @@ export const AccountSettings: React.FC = () => {
   const [userEmail, setUserEmail] = useState<String>("");
   const [loading, setLoading] = useState(true);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -193,7 +194,7 @@ export const AccountSettings: React.FC = () => {
         });
       }
     }
-    
+
     if (selectedFile) {
       await handleChangeImage();
     }
@@ -276,6 +277,12 @@ export const AccountSettings: React.FC = () => {
     return <LoadingScreen />;
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    document.cookie = "sb_token=; Max-Age=0; path=/";
+    router.push("/");
+  };
+
   return (
     <div className="w-full h-full px-2 py-3 lg:px-7 lg:py-5 bg-background overflow-y-auto max-h-[calc(100vh-80px)]">
       <div className="flex flex-row gap-2 justify-center md:justify-start items-center p-5">
@@ -289,11 +296,10 @@ export const AccountSettings: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-2 w-full md:w-[500px] lg:w-[600px] border-2 border-border p-2 rounded-3xl items-center lg:items-center">
           <div className="relative w-[100px] h-[100px] min-h-[100px] min-w-[100px] rounded-full overflow-hidden">
             {userData?.pfp ? (
-              <Image
+              <img
                 src={userData.pfp}
                 alt="User profile picture"
-                fill
-                className="rounded-full object-cover"
+                className="rounded-full object-cover h-full w-full"
               />
             ) : (
               <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
@@ -329,6 +335,14 @@ export const AccountSettings: React.FC = () => {
           onClick={handleSave}
           type={"submit"}
         />
+        <div className="block lg:hidden">
+        <SettingsButton
+          title={"Logout"}
+          onClick={handleLogout}
+          type={"submit"}
+          isLogout={true}
+        />
+        </div>
       </form>
     </div>
   );

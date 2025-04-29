@@ -2,6 +2,7 @@ import { LoadingScreen } from "@/components/ui";
 import { supabase } from "@/lib/client";
 import React, { useEffect, useState, KeyboardEvent, useRef } from "react";
 import { Bounce, toast } from "react-toastify";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 type Users = {
   id: string;
@@ -264,7 +265,11 @@ export const Chats = () => {
 
   return (
     <main className="w-full h-full flex flex-row px-2 py-3 lg:px-7 lg:py-5 max-h-[calc(100vh-60px)] lg:max-h-max gap-2">
-      <div className="h-full w-full md:max-w-[300px] overflow-y-auto space-y-2 border-2 border-border p-2 block">
+      {/* Lista de usuarios */}
+      <div
+        className={`h-full w-full md:max-w-[300px] overflow-y-auto space-y-2 border-2 border-border p-2 block
+    ${selectedUser ? "hidden md:block" : ""}`}
+      >
         {users.length === 0 ? (
           <div className="text-center text-muted p-4">
             No followed users found
@@ -275,12 +280,12 @@ export const Chats = () => {
               <div
                 onClick={() => setSelectedUser(u)}
                 className={`flex items-center space-x-3 p-2 rounded cursor-pointer transition-colors 
-            ${selectedUser?.id === u.id ? "bg-accent" : "hover:bg-accent"}`}
+              ${selectedUser?.id === u.id ? "bg-accent" : "hover:bg-accent"}`}
                 role="button"
                 tabIndex={0}
               >
                 <img
-                  src={u.pfp}
+                  src={u.pfp || "/default-avatar.png"}
                   alt={u.user}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -292,23 +297,41 @@ export const Chats = () => {
         )}
       </div>
 
-      <div className="h-full w-full items-center hidden md:flex flex-col">
+      {/* Vista de chat */}
+      <div
+        className={`h-full w-full flex-col ${
+          selectedUser ? "flex" : "hidden md:flex"
+        }`}
+      >
         {selectedUser ? (
           <>
+            {/* Encabezado del chat */}
             <div className="flex items-center gap-3 p-4 border-b w-full">
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="md:hidden text-sm text-blue-500 hover:underline"
+              >
+                <ArrowBackIosIcon />
+              </button>
+
               <img
-                src={selectedUser.pfp}
+                src={selectedUser.pfp || "/default-avatar.png"}
                 alt={selectedUser.user}
                 className="w-10 h-10 rounded-full object-cover"
               />
               <h2 className="text-lg font-semibold">{selectedUser.user}</h2>
             </div>
 
+            {/* Mensajes */}
             <div className="flex-1 w-full p-4 overflow-y-auto flex flex-col gap-2">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex ${msg.sender === selectedUser.id ? "justify-start" : "justify-end"}`}
+                  className={`flex ${
+                    msg.sender === selectedUser.id
+                      ? "justify-start"
+                      : "justify-end"
+                  }`}
                 >
                   <div
                     className={`p-2 rounded max-w-[70%] ${
@@ -327,6 +350,7 @@ export const Chats = () => {
               ))}
             </div>
 
+            {/* Input de mensaje */}
             <div className="w-full p-4 border-t flex items-center gap-2">
               <input
                 type="text"

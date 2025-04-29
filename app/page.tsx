@@ -1,29 +1,11 @@
 "use client";
-//Core
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/client";
-import Image from "next/image";
 
 // Elements
-import { LoadingScreen, MainContainer } from "@/components/ui";
+import { MainContainer } from "@/components/ui";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SignInForm } from "@/components/SignInForm";
 
-/**
- * Search for the clients cookie in the nav
- */
-const getCookie = (name: string) => {
-  const matches = document.cookie.match(
-    new RegExp(
-      "(?:^|; )" + name.replace(/([.$?*|{}()[]\/+^])/g, "\\$1") + "=([^;]*)"
-    )
-  );
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-};
-
 export default function Home() {
-
   return (
     <MainContainer>
       <div className="bg-background grid w-full h-full grid-cols-1 lg:grid-cols-2 shadow-lg">
@@ -34,9 +16,8 @@ export default function Home() {
           <SignInForm />
         </div>
         <div className="relative hidden lg:block w-full h-full">
-          <Image
+          <img
             className="object-cover w-full h-full"
-            fill
             src="/images/sideimage.jpg"
             alt="Login side image"
             sizes="(max-width: 768px) 100vw, 50vw"
