@@ -23,38 +23,6 @@ const getCookie = (name: string) => {
 };
 
 export default function Home() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
-  /**
-   * On render checks if there is a saved cookie
-   */
-  useEffect(() => {
-    const token = getCookie("sb_token");
-
-    if (token) {
-      supabase.auth
-        .setSession({
-          access_token: token,
-          refresh_token: "",
-        })
-        .then(() => {
-          router.push("/dashboard");
-        })
-        .catch((error) => {
-          console.error("Error al autenticar:", error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
-  }, [router]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
 
   return (
     <MainContainer>
