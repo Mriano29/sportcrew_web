@@ -157,7 +157,7 @@ export const News = () => {
               <div className="flex flex-row w-full items-center p-3 gap-3">
                 <div className="relative w-[30px] h-[30px]">
                   <img
-                    src={post.users.pfp || ""}
+                    src={post.users.pfp || "images/noImage.jpg"}
                     alt="User profile picture"
                     loading="lazy"
                     className="rounded-full object-cover w-[30px] h-[30px]"
@@ -169,10 +169,10 @@ export const News = () => {
               </div>
               <div className="relative w-full h-full group">
                 <img
-                  src={post.media || ""}
+                  src={post.media || "images/noImage.jpg"}
                   alt="Post image"
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover w-full h-full"
+                  className="object-fit w-full h-full"
                 />
               </div>
             </div>

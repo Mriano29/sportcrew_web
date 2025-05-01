@@ -285,7 +285,7 @@ export const Chats = () => {
                 tabIndex={0}
               >
                 <img
-                  src={u.pfp || "/default-avatar.png"}
+                  src={u.pfp || "images/noImage.jpg"}
                   alt={u.user}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -315,7 +315,7 @@ export const Chats = () => {
               </button>
 
               <img
-                src={selectedUser.pfp || "/default-avatar.png"}
+                src={selectedUser.pfp || "images/noImage.jpg"}
                 alt={selectedUser.user}
                 className="w-10 h-10 rounded-full object-cover"
               />

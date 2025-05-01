@@ -43,18 +43,13 @@ export default function Dashboard() {
       section: <AccountSettings />,
     },
   ];
-
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        router.push("/");
-      } else {
-        setLoading(false);
-      }
-    };
-
-    checkSession();
+    const session = localStorage.getItem("supabase_session");
+    if (!session) {
+      router.push("/");
+    } else {
+      setLoading(false);
+    }
   }, [router]);
 
   if (loading) {

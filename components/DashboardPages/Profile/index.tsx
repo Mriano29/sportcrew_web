@@ -144,7 +144,7 @@ export const Profile = () => {
       <div className="flex flex-row gap-4 lg:gap-8 w-full justify-center items-center">
         <div className="relative w-[100px] h-[100px] md:w-[175px] md:h-[175px]  lg:w-[250px] lg:h-[250px]">
           <img
-            src={userData?.pfp || ""}
+            src={userData?.pfp || "images/noImage.jpg"}
             alt="User profile picture"
             className="rounded-full object-cover h-full w-full"
           />

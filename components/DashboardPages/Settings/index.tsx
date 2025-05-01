@@ -295,17 +295,11 @@ export const AccountSettings: React.FC = () => {
       >
         <div className="flex flex-col md:flex-row gap-2 w-full md:w-[500px] lg:w-[600px] border-2 border-border p-2 rounded-3xl items-center lg:items-center">
           <div className="relative w-[100px] h-[100px] min-h-[100px] min-w-[100px] rounded-full overflow-hidden">
-            {userData?.pfp ? (
-              <img
-                src={userData.pfp}
-                alt="User profile picture"
-                className="rounded-full object-cover h-full w-full"
-              />
-            ) : (
-              <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center">
-                <span>No Image</span>
-              </div>
-            )}
+            <img
+              src={userData?.pfp || "images/noImage.jpg"}
+              alt="User profile picture"
+              className="rounded-full object-cover h-full w-full"
+            />
           </div>
           <h1 className="font-bold">{userEmail}</h1>
           <div className="lg:ml-auto">
@@ -336,12 +330,12 @@ export const AccountSettings: React.FC = () => {
           type={"submit"}
         />
         <div className="block lg:hidden">
-        <SettingsButton
-          title={"Logout"}
-          onClick={handleLogout}
-          type={"submit"}
-          isLogout={true}
-        />
+          <SettingsButton
+            title={"Logout"}
+            onClick={handleLogout}
+            type={"submit"}
+            isLogout={true}
+          />
         </div>
       </form>
     </div>

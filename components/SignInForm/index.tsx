@@ -8,17 +8,12 @@ import { FormButton, FormInput, OrDiv } from "../ui";
 import { Bounce, toast } from "react-toastify";
 import { supabase } from "@/lib/client";
 
-interface SignInFormProps {}
+interface SignInFormProps { }
 
 export const SignInForm: React.FC<SignInFormProps> = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const setCookie = (name: string, value: string, days: number) => {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${name}=${value}; expires=${expires}; path=/; secure; SameSite=Strict`;
-  };
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -43,7 +38,7 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
     } else {
       const token = data?.session?.access_token;
       if (token) {
-        setCookie("sb_token", token, 7);
+        localStorage.setItem("supabase_session", JSON.stringify(data.session));
       }
       router.push("/dashboard");
     }

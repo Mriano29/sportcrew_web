@@ -160,29 +160,29 @@ export const PostInfo = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40 p-2 sm:p-4 ">
-      <div className="bg-background rounded-lg shadow-lg w-full h-full max-w-4xl lg:max-w-6xl  relative overflow-hidden flex flex-col max-h-[calc(100vh-150px)] lg:max-h-full">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-40 p-2 sm:p-4">
+      <div className="bg-background rounded-lg shadow-lg w-full h-full max-w-[calc(100vw-50px)] lg:max-w-6xl relative overflow-hidden flex flex-col max-h-[calc(100vh-150px)] lg:max-h-full">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 sm:top-4 sm:right-4 text-foreground hover:text-red-700 text-xl z-50"
         >
           <ClearIcon />
         </button>
-        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden w-full">
           <div className="relative w-full h-64 sm:h-80 lg:h-auto lg:flex-1">
             <img
               src={post.media}
               alt="post"
-              className="object-cover  w-full h-64 sm:h-80 lg:h-full"
+              className="object-fit  w-full h-64 sm:h-80 lg:h-full"
             />
           </div>
-          <div className="flex flex-col lg:flex-1 p-2 sm:p-4 h-full">
-            <div className="mb-2">
-              <div className="flex flex-row gap-2 mb-2">
+          <div className="flex flex-col lg:flex-1 p-2 sm:p-4 h-full overflow-auto">
+            <div className="flex flex-row mb-2">
+              <div className="flex-1 flex-col gap-2 mb-2">
                 <h1 className="font-bold">{username}:</h1>
                 <h2 className="break-words">{post.content}</h2>
               </div>
-              <div className="flex flex-row gap-2 items-center">
+              <div className="flex-1 flex-row gap-2 items-center justify-center w-full">
                 <FavoriteIcon
                   onClick={handleLike}
                   sx={{
@@ -198,7 +198,7 @@ export const PostInfo = ({
                 <span>{likeCount}</span>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto pr-1 max-h-[120px]">
+            <div className="flex flex-col overflow-y-auto pr-1 border-t border-border py-5">
               <h1 className="font-bold mb-2">Comments:</h1>
               {commentList.length > 0 ? (
                 commentList.map((comment, index) => (
@@ -212,7 +212,7 @@ export const PostInfo = ({
                 <p>No comments yet.</p>
               )}
             </div>
-            <div className="mt-2 flex flex-row gap-2 items-center justify-center">
+            <div className="mt-auto pt-2 flex flex-row gap-2 items-center border-t border-border justify-center">
               <FormInput
                 type="text"
                 value={comment}

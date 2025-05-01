@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // output: "export", //Uncomment to build
+  //output: "export", //Uncomment to build
 };
 
 export default nextConfig;
