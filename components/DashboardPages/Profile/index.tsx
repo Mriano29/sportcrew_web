@@ -14,6 +14,9 @@ interface User {
   pfp: string;
 }
 
+/**
+ * This is the users profile screen
+ */
 export const Profile = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [postNumber, setPostNumber] = useState<number>(0);
@@ -23,6 +26,10 @@ export const Profile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+
+      /**
+       * First we get the session
+       */
       const { data: sessionData, error: sessionError } =
         await supabase.auth.getSession();
 
@@ -47,12 +54,21 @@ export const Profile = () => {
       if (user) {
         const userId = user.id;
 
+        /**
+         * If there is an active user we select from the users table the data from the current user
+         * using its current id
+         */
+
         const { data: fetchedUser, error: fetchedUserError } = await supabase
           .from("users")
           .select("user, desc, pfp")
           .eq("id", userId)
           .single();
 
+          /**
+           * Then we count how many posts, followers, and followed users, the current user has by
+           * counting the rows related to it on its respective tables
+           */
         const { count: postCount, error: postCountError } = await supabase
           .from("posts")
           .select("*", { count: "exact", head: true })
@@ -123,6 +139,9 @@ export const Profile = () => {
           });
           return;
         } else {
+          /**
+           * If there are no errors we set the local consts to the fetched data
+           */
           setUserData(fetchedUser);
           setPostNumber(postCount || 0);
           setFollowedNumber(followedCount || 0);

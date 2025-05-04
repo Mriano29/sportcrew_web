@@ -3,6 +3,9 @@ import { MainContainer } from "@/components/ui/MainContainer";
 import { SignUpForm } from "@/components/SignUpForm";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
+/**
+ * Signup page from the app
+ */
 export default async function Signup() {
   return (
     <MainContainer>

@@ -1,4 +1,9 @@
+//Core
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { supabase } from "@/lib/client";
+import { useRouter } from "next/navigation";
+
+//Elements
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Bounce, toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
@@ -8,9 +13,8 @@ import {
   SettingsInput,
   SettingsInputArea,
 } from "@/components/ui";
-import { supabase } from "@/lib/client";
-import { useRouter } from "next/navigation";
 
+//Types
 interface User {
   id: any;
   user: string;
@@ -21,6 +25,9 @@ interface User {
   pfp: string;
 }
 
+/**
+ * Account settings page
+ */
 export const AccountSettings: React.FC = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [userName, setUserName] = useState<string>("");
@@ -30,6 +37,10 @@ export const AccountSettings: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
+  /**
+   * Activates after selecting a file, then changes the shown pfp locally
+   * @param acceptedFiles the selected files declared in the useDropzone
+   */
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
@@ -54,6 +65,9 @@ export const AccountSettings: React.FC = () => {
     maxFiles: 1,
   });
 
+  /**
+   * Here the current user's data is fetched 
+   */
   useEffect(() => {
     const fetchUserData = async () => {
       const { data: sessionData, error: sessionError } =
@@ -85,6 +99,9 @@ export const AccountSettings: React.FC = () => {
           setUserEmail(userEmail);
         }
 
+        /**
+         * Select user's data from the users table using the current user's id
+         */
         const { data, error } = await supabase
           .from("users")
           .select("*")
@@ -116,17 +133,30 @@ export const AccountSettings: React.FC = () => {
     fetchUserData();
   }, []);
 
+  /** 
+   * When changing the value in the username input
+  */
   function handleChangeusername(event: ChangeEvent<HTMLInputElement>): void {
     const { value } = event.target;
     setUserName(value);
   }
 
+  /** 
+ * When changing the value in the description input
+*/
   function handleChangeDesc(event: ChangeEvent<HTMLTextAreaElement>): void {
     const { value } = event.target;
     setUserDesc(value);
   }
 
+  /**
+   * After pressing the save button checks what has changed then updates the tables/storage
+   */
   async function handleSave(): Promise<void> {
+    /**
+     * If user or description has changed, it updates the users table with the new data, then,
+     *  shows a confirmation toast
+     */
     if (userData?.user !== userName) {
       const { error } = await supabase
         .from("users")
@@ -194,12 +224,19 @@ export const AccountSettings: React.FC = () => {
         });
       }
     }
-
+    /**
+     * If there is a selected file, we send the change image function
+     */
     if (selectedFile) {
       await handleChangeImage();
     }
   }
 
+  /**
+   * If there is a new image, to save it we need to update it in the storage first,
+   * to do this we only need to upload it with the same name with the "upsert: true"
+   * condition in the same file space
+   */
   async function handleChangeImage(): Promise<void> {
     if (selectedFile && userData?.id) {
       const fileName = `${userData.id}/profile_picture.jpg`;
@@ -223,6 +260,10 @@ export const AccountSettings: React.FC = () => {
         });
         return;
       }
+      /**
+       * We then obtain its public url and update the pfp column in the users table by using the current
+       * user's id, then we show a confirmation toast
+       */
       const { data: publicUrlData } = supabase.storage
         .from("sportcrew-media")
         .getPublicUrl(fileName);
@@ -277,9 +318,12 @@ export const AccountSettings: React.FC = () => {
     return <LoadingScreen />;
   }
 
+  /**
+   * This is only used in small screens when the logout button is visible, it sings the user out
+   * then pushes it to the home page
+   */
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    document.cookie = "sb_token=; Max-Age=0; path=/";
     router.push("/");
   };
 

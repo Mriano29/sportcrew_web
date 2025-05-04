@@ -1,8 +1,12 @@
+//Core
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/client";
+
+//Elements
 import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "../ui";
 import { PostInfo } from "../PostInfo";
-import { supabase } from "@/lib/client";
+
 
 type Post = {
   id: any;

@@ -1,7 +1,14 @@
-import { News } from "@/components/News";
-import { HomeSearchBar } from "@/components/ui";
+//Core
 import React from "react";
 
+//Elements
+import { News } from "@/components/News";
+import { HomeSearchBar } from "@/components/ui";
+
+
+/**
+ * This is the app's for you page
+ */
 export const HomePage = () => {
   return (
     <main className="h-full w-full flex flex-col px-2 py-3 lg:px-7 lg:py-5 gap-4">

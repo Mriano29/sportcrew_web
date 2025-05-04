@@ -5,6 +5,9 @@ import { MainContainer } from "@/components/ui";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { SignInForm } from "@/components/SignInForm";
 
+/**
+ * This is the project's main page, which shows the signin form
+ */
 export default function Home() {
   return (
     <MainContainer>

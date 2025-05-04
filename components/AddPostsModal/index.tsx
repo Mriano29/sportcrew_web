@@ -1,16 +1,25 @@
+//Core
 import { useState } from "react";
+import { supabase } from "@/lib/client";
+
+//Elements
 import { FormButton } from "../ui";
 import ClearIcon from "@mui/icons-material/Clear";
 import ImageDropzone from "../ImageDropZone";
 import { Bounce, toast } from "react-toastify";
-import { supabase } from "@/lib/client";
 
-
+//Types
 type Props = {
   open: boolean;
   onClose: () => void;
 };
 
+/**
+ * This is a modal form used in the profile to add a post
+ * @param open variable which controls the opening of the modal
+ * @param onClose function that controls the actions after closing the modal
+ * @returns a modal menu 
+ */
 export default function AddPostModal({ open, onClose }: Props) {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -18,10 +27,16 @@ export default function AddPostModal({ open, onClose }: Props) {
 
   if (!open) return null;
 
+  /**
+   * This method controls the posts upload
+   * @param e the formEvent used in the form, in this case, submit
+   * @returns a toast showing the upload status
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    //Gets the user current session data
     const { data: sessionData, error: sessionError } =
       await supabase.auth.getSession();
 
@@ -38,6 +53,10 @@ export default function AddPostModal({ open, onClose }: Props) {
     }
 
     try {
+      /**
+       * If there is a user it tries to upload a post to the posts table using the current user's ID
+       * and saves the post ID
+       */
       const { data: insertedPost, error: insertError } = await supabase
         .from("posts")
         .insert({ content, userId: user.id })
@@ -48,6 +67,9 @@ export default function AddPostModal({ open, onClose }: Props) {
 
       let mediaUrl = null;
 
+      /**
+       * If there is an Image it uploads it to the supabase storage first, then it saves the post's public url
+       */
       if (imageFile) {
         const path = `${user.id}/posts/${insertedPost.id}.jpg`;
         const { error: uploadError } = await supabase.storage
@@ -60,11 +82,19 @@ export default function AddPostModal({ open, onClose }: Props) {
 
         mediaUrl = publicUrlData.publicUrl;
 
+        /**
+         * If there were no upload errors it updates the row in the posts table using the saved id
+         */
         await supabase
           .from("posts")
           .update({ media: mediaUrl })
           .eq("id", insertedPost.id);
       }
+
+      /**
+       * If everything was correct the user is shown a toast, then content and image are emptied and 
+       * page is reloaded
+       */
 
       toast.success("Post published", {
         position: "top-right",

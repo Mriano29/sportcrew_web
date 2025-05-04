@@ -1,9 +1,13 @@
-import { LoadingScreen } from "@/components/ui";
+//Core
 import { supabase } from "@/lib/client";
 import React, { useEffect, useState, KeyboardEvent, useRef } from "react";
+
+//Elements
+import { LoadingScreen } from "@/components/ui";
 import { Bounce, toast } from "react-toastify";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
+//Types
 type Users = {
   id: string;
   user: string;
@@ -18,6 +22,9 @@ type Message = {
   created_at: string;
 };
 
+/**
+ * This is the component that shows the user's chats
+ */
 export const Chats = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<Users[]>([]);
@@ -30,6 +37,10 @@ export const Chats = () => {
     typeof supabase.channel
   > | null>(null);
 
+  /**
+   * This useEffect sets the scroller at the bottom of the chat (latest message), 
+   * on entering to a chat or when a new message is received
+   */
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +50,9 @@ export const Chats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        /**
+         * First the user's current session is saved
+         */
         const { data: sessionData, error: sessionError } =
           await supabase.auth.getSession();
 
@@ -59,6 +73,9 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * Then we receive the users followed users from the followed table using its id
+         */
         const { data: followedUsers, error: followedUsersError } =
           await supabase
             .from("followed")
@@ -76,6 +93,9 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * If there are no users it set to empty
+         */
         const followedUserIds = followedUsers?.map((u) => u.followedUser) || [];
         if (followedUserIds.length === 0) {
           setUsers([]);
@@ -83,6 +103,9 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * After getting the users we ask for each of their data, their id, username and profile picture
+         */
         const { data: usersData, error: usersError } = await supabase
           .from("users")
           .select("id, user, pfp")
@@ -99,6 +122,9 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * then finally their data is saved to the const
+         */
         setUsers(usersData || []);
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -116,13 +142,16 @@ export const Chats = () => {
     fetchData();
   }, []);
 
-  // Obtener mensajes al seleccionar usuario
+  /**
+   * This is used to load the users messages on select
+   */
   useEffect(() => {
     const fetchMessages = async () => {
       if (!selectedUser) return;
 
       setLoading(true);
       try {
+        //As always we get the current user's session
         const { data: sessionData } = await supabase.auth.getSession();
         const user = sessionData?.session?.user;
         if (!user) {
@@ -130,6 +159,10 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * Selects everything from the chats table and filters by sender and receiver
+         * then orders it
+         */
         const { data, error } = await supabase
           .from("chats")
           .select("*")
@@ -150,6 +183,9 @@ export const Chats = () => {
           return;
         }
 
+        /**
+         * If there were no problems, messages are saved in the const
+         */
         setMessages(data || []);
       } catch (err) {
         console.error("Unexpected error fetching messages:", err);
@@ -167,7 +203,7 @@ export const Chats = () => {
     fetchMessages();
   }, [selectedUser]);
 
-  // Subscripción en tiempo real
+  // This sets the channel for the real time subscription
   useEffect(() => {
     const subscribeToMessages = async () => {
       if (channel) {
@@ -181,6 +217,11 @@ export const Chats = () => {
         return;
       }
 
+      /**
+       * This sets the new subscription after selecting an user table db changes and postgres changes
+       * are the defaults used by supabase to set this every event that means deletions selects and inserts
+       * although realistically right now we only use insertions and selects from the chats table
+       */
       const newChannel = supabase
         .channel("table-db-changes")
         .on(
@@ -191,7 +232,10 @@ export const Chats = () => {
             table: "chats",
           },
           (payload) => {
-            console.log("Received message:", payload);
+            /**
+             * On change we first check if the payload is a message from these users chat, if it is
+             * we update the messages const with the new data
+             */
             const newMessage = payload.new as Message;
             if (
               newMessage &&
@@ -212,10 +256,16 @@ export const Chats = () => {
       setChannel(newChannel);
     };
 
+    /**
+     * If an user is selected triggers the subscription change method
+     */
     if (selectedUser) {
       subscribeToMessages();
     }
 
+    /**
+     * triggers when a new selected user is set to avoid channel problems
+     */
     return () => {
       if (channel) {
         supabase.removeChannel(channel);
@@ -224,6 +274,10 @@ export const Chats = () => {
     };
   }, [selectedUser]);
 
+  /**
+   * Used to let the user use the enter key to send messages
+   * @param e the pressed key
+   */
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -231,7 +285,7 @@ export const Chats = () => {
     }
   };
 
-  // Enviar mensaje
+  //Send messages
   const handleSendMessage = async () => {
     if (!message.trim() || !selectedUser) return;
 
@@ -240,6 +294,9 @@ export const Chats = () => {
     if (!user) return;
 
     setIsSending(true);
+    /**
+     * Inserts to chats table a new row containing the message, the sender and the receiver
+     */
     const { error } = await supabase.from("chats").insert({
       sender: user.id,
       receiver: selectedUser.id,
@@ -257,6 +314,9 @@ export const Chats = () => {
       return;
     }
 
+    /**
+     * On send we set the message box to empty
+     */
     setMessage("");
     setIsSending(false);
   };
@@ -265,7 +325,7 @@ export const Chats = () => {
 
   return (
     <main className="w-full h-full flex flex-row px-2 py-3 lg:px-7 lg:py-5 max-h-[calc(100vh-60px)] lg:max-h-max gap-2">
-      {/* Lista de usuarios */}
+      {/* Users list */}
       <div
         className={`h-full w-full md:max-w-[300px] overflow-y-auto space-y-2 border-2 border-border p-2 block
     ${selectedUser ? "hidden md:block" : ""}`}
@@ -297,15 +357,13 @@ export const Chats = () => {
         )}
       </div>
 
-      {/* Vista de chat */}
+      {/* Chat view -  in small screens it only appears when an user is selected*/}
       <div
-        className={`h-full w-full flex-col ${
-          selectedUser ? "flex" : "hidden md:flex"
-        }`}
+        className={`h-full w-full flex-col ${selectedUser ? "flex" : "hidden md:flex"
+          }`}
       >
         {selectedUser ? (
           <>
-            {/* Encabezado del chat */}
             <div className="flex items-center gap-3 p-4 border-b w-full">
               <button
                 onClick={() => setSelectedUser(null)}
@@ -321,24 +379,20 @@ export const Chats = () => {
               />
               <h2 className="text-lg font-semibold">{selectedUser.user}</h2>
             </div>
-
-            {/* Mensajes */}
             <div className="flex-1 w-full p-4 overflow-y-auto flex flex-col gap-2">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
-                  className={`flex ${
-                    msg.sender === selectedUser.id
+                  className={`flex ${msg.sender === selectedUser.id
                       ? "justify-start"
                       : "justify-end"
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`p-2 rounded max-w-[70%] ${
-                      msg.sender === selectedUser.id
+                    className={`p-2 rounded max-w-[70%] ${msg.sender === selectedUser.id
                         ? "bg-accent"
                         : "bg-accent-foreground"
-                    }`}
+                      }`}
                   >
                     {msg.message}
                     <div ref={messagesEndRef} />
@@ -349,8 +403,6 @@ export const Chats = () => {
                 </div>
               ))}
             </div>
-
-            {/* Input de mensaje */}
             <div className="w-full p-4 border-t flex items-center gap-2">
               <input
                 type="text"

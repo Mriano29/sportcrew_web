@@ -15,8 +15,10 @@ import {
 } from "@/components/DashboardPages";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
-import { supabase } from "@/lib/client";
 
+/**
+ * Dashboard page includes every function from the app except login and signup
+ */
 export default function Dashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -43,6 +45,9 @@ export default function Dashboard() {
       section: <AccountSettings />,
     },
   ];
+  /**
+   * This checks if the user is logged, if the user is not logged it pushes it to the sign in menu
+   */
   useEffect(() => {
     const session = localStorage.getItem("supabase_session");
     if (!session) {
@@ -52,6 +57,9 @@ export default function Dashboard() {
     }
   }, [router]);
 
+  /**
+   * If loading shows the loading icon
+   */
   if (loading) {
     return <LoadingScreen />;
   }
