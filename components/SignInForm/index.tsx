@@ -15,6 +15,9 @@ export const SignInForm: React.FC<SignInFormProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  /**
+   * Here supabase auth is called to try to sign into the app
+   */
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 

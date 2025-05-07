@@ -25,6 +25,12 @@ export const PostInfo = ({
     if (!post?.id || !post?.userId) return;
 
     try {
+      /**
+       * Here I used promise all to make all of this calls at the same time,
+       * it obtains the post that made the post, its like count, the current session's user
+       * and finally the comments from the current post which means the user that made it
+       * and its content
+       */
       const [userRes, likeCountRes, sessionRes, commentsRes] =
         await Promise.all([
           supabase.from("users").select("user").eq("id", post.userId).single(),
@@ -40,6 +46,12 @@ export const PostInfo = ({
             .eq("postId", post.id),
         ]);
 
+      /**
+       * If the comments were obtained succesfully, another consult is made,
+       * by using each commentor's id we obtain its username and save it in the
+       * comments with usernames const, right after the loop finishes, data is copied to
+       * the comment list const
+       */
       if (!commentsRes.error) {
         const commentsWithUsernames = await Promise.all(
           commentsRes.data.map(async (comment: any) => {
@@ -58,6 +70,9 @@ export const PostInfo = ({
         setCommentList(commentsWithUsernames);
       }
 
+      /**
+       * Here we set the posts user username
+       */
       if (userRes.error) {
         console.error("Error fetching username:", userRes.error);
         setUsername(null);
@@ -65,6 +80,9 @@ export const PostInfo = ({
         setUsername(userRes.data?.user || null);
       }
 
+      /**
+       * Here we set the posts like count
+       */
       if (likeCountRes.error) {
         console.error("Error fetching like count:", likeCountRes.error);
         setLikeCount(0);
@@ -72,6 +90,11 @@ export const PostInfo = ({
         setLikeCount(likeCountRes.count || 0);
       }
 
+      /**
+       * Here we set the current user's session,  and now we check if the post has been liked
+       * by the current user by using the post id and the current session user's id in the likes
+       * table
+       */
       if (sessionRes.error) {
         console.error("Error fetching user session:", sessionRes.error);
       } else {
@@ -102,12 +125,20 @@ export const PostInfo = ({
     }
   }, [post?.id, post?.userId]);
 
+  /**
+   * This updates the data when the modal is opened
+   */
   useEffect(() => {
     if (open) {
       fetchData();
     }
   }, [open, fetchData]);
 
+  /**
+   * This first checks if the post has been liked, if not it inserts a row into the likes table,
+   * sums a like to thepost and sets the liked status to true this works asynchronously to
+   * avoid lag
+   */
   const handleLike = useCallback(async () => {
     if (!post?.id || !user || isLiked) return;
 
@@ -132,10 +163,17 @@ export const PostInfo = ({
 
   if (!open) return null;
 
+  /**
+   * This constrols changes in the comment input and sets the comment const accordingly
+   */
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };
 
+  /**
+   * This checks if there is a valid comment currently, if there is it inserts the data into the comments
+   * table
+   */
   const handleComment = async () => {
     if (!post?.id || !user || !comment || comment === "") return;
 

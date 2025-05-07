@@ -17,6 +17,12 @@ export function HomeSearchBar() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  /**
+   * This searches for the user written in the search bar and obtains its id, username and pfp,
+   * then, it checks if the shown users are followed by the current user by checking the followed
+   * table using the current user id and the shown users id then finally sets the results const with
+   * the data and its followed status
+   */
   const handleSearchClick = async () => {
     if (!searchTerm.trim()) return;
 
@@ -67,6 +73,9 @@ export function HomeSearchBar() {
     setLoading(false);
   };
 
+  /**
+   * If the user clicks outside the dropdown or the searchbar, the dropdown closes
+   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -83,6 +92,12 @@ export function HomeSearchBar() {
     };
   }, []);
 
+  /**
+   * On clicking the button, if the user is already followed it deletes the row from the followed
+   * table, and also removes the current user from the unfollowed user's followers table
+   * on the contrary, if its not followed it updates these tables to add the information then updates
+   * the results locally
+   */
   const handleFollowUser = async (targetUser: User) => {
     const currentUser = (await supabase.auth.getUser()).data.user;
     if (!currentUser) return;

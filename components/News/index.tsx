@@ -7,7 +7,6 @@ import { Bounce, toast } from "react-toastify";
 import { LoadingScreen } from "../ui";
 import { PostInfo } from "../PostInfo";
 
-
 type Post = {
   id: any;
   media: string | null;
@@ -30,6 +29,9 @@ export const News = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        /**
+         * Obtain the current session
+         */
         const { data: sessionData, error: sessionError } =
           await supabase.auth.getSession();
 
@@ -49,6 +51,9 @@ export const News = () => {
           return;
         }
 
+        /**
+         * If there are no problems we set a const with the current user
+         */
         const user = sessionData?.session?.user;
 
         if (!user) {
@@ -56,7 +61,9 @@ export const News = () => {
           return;
         }
 
-        // 1. Obtener usuarios seguidos
+        /**
+         * Obtain followed users from followed table by using the current user's id
+         */
         const { data: followedData, error: followedError } = await supabase
           .from("followed")
           .select("followedUser")
@@ -73,12 +80,17 @@ export const News = () => {
           return;
         }
 
+        /**
+         * If there are no problems we save the followed users ids in this const
+         */
         const followedUserIds =
           followedData?.map((item) => item.followedUser) || [];
 
-        // 2. Obtener últimos 5 posts por cada usuario seguido
         const allPosts: Post[] = [];
-
+        /**
+         *Now by using the saved id's we create a for loop to obtain the last 5 posts from each users,
+         their username and profile picture, and order them from lastest to oldest
+         */
         for (const userId of followedUserIds) {
           const { data: postsData, error: postsError } = await supabase
             .from("posts")
@@ -95,17 +107,26 @@ export const News = () => {
             continue;
           }
 
+          /**
+           * After the data is obtained we add the fetched posts with its user to the all posts const
+           */
           if (postsData) {
             allPosts.push(...postsData);
           }
         }
 
-        // 3. Ordenar todos los posts por fecha
+        /**
+         * Finally this method is used to order every obtained post from latest to oldest
+         * since when we obtained it from the database it only took into account the ones from each user
+         */
         allPosts.sort(
           (a, b) =>
             new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
 
+        /**
+         * Then the const posts is set to this data
+         */
         setPosts(allPosts);
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -129,6 +150,12 @@ export const News = () => {
     );
   }
 
+  /**
+   * This method is the intermediary between postInfo and the news component
+   * when a post is clicked it sets the selected post to it and opens the post info modal
+   *
+   * @param post the clicked post
+   */
   function handleShowPostInfo(post: Post): void {
     if (post) {
       setSelectedPost(post);
@@ -183,6 +210,9 @@ export const News = () => {
           ))}
         </div>
       </div>
+      {/**
+       * This is the post info modal
+       */}
       <PostInfo
         open={openPostInfo}
         onClose={() => setOpenPostInfo(false)}

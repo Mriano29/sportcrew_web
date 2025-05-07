@@ -17,6 +17,11 @@ export const SignUpForm: React.FC<SignUpFormProps> = () => {
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
 
+  /**
+   * Here the written data is checked, if everything's correct
+   * supabase auth is called go subscribe the user and a table
+   * is created to save user's profile data
+   */
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -82,6 +87,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = () => {
     }
   };
 
+  /**
+   * This just clears the fields from the form
+   */
   function handleReset(): void {
     setEmail("");
     setUsername("");
